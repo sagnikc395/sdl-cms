@@ -1,37 +1,85 @@
 'use client';
 
-import { useSession, signIn, signOut } from 'next-auth/react';
-import courseData from './courses/systems-for-deep-learning.json';
+import React, { useState, useEffect } from 'react';
+import ProgressBar from './components/ProgressBar'; // Import the ProgressBar component
+
+interface Reading {
+  id: string;
+  title: string;
+  url: string;
+}
+
+interface Module {
+  id: string;
+  title: string;
+  readings: Reading[];
+}
+
+interface Course {
+  id: string;
+  title: string;
+  description: string;
+  modules: Module[];
+}
 
 export default function Home() {
-  const { data: session } = useSession();
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  if (!session) {
+  useEffect(() => {
+    async function fetchCourses() {
+      try {
+        const response = await fetch('/api/courses');
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        setCourses(data);
+      } catch (e: any) {
+        setError(e.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchCourses();
+  }, []);
+
+  if (loading) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-        <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
-          Please sign in to view the course
-        </h1>
-        <button
-          onClick={() => signIn('github')}
-          className="mt-8 inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-        >
-          Sign in with GitHub
-        </button>
+      <div className="flex min-h-screen items-center justify-center">
+        <p className="text-xl">Loading courses...</p>
       </div>
     );
   }
+
+  if (error) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <p className="text-xl text-red-600">Error: {error}</p>
+      </div>
+    );
+  }
+
+  if (courses.length === 0) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <p className="text-xl">No courses available.</p>
+      </div>
+    );
+  }
+
+  const courseData = courses[0]; // Assuming we display the first course for now
+
+  // Calculate total readings (placeholder for now)
+  const totalReadings = courseData.modules.reduce((acc, module) => acc + module.readings.length, 0);
+  const completedReadings = 0; // For now, assume 0 completed readings
+  const progress = totalReadings > 0 ? (completedReadings / totalReadings) * 100 : 0;
 
   return (
     <div className="min-h-screen bg-zinc-50 font-sans text-gray-800 dark:bg-black dark:text-gray-200">
       <header className="flex items-center justify-between bg-white p-4 dark:bg-gray-800">
         <h1 className="text-xl font-bold">Systems for Deep Learning</h1>
-        <button
-          onClick={() => signOut()}
-          className="inline-flex items-center rounded-md border border-transparent bg-red-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
-        >
-          Sign out
-        </button>
       </header>
       <main className="mx-auto max-w-3xl py-12 px-4 sm:px-6 lg:px-8">
         <div className="mb-8 text-center">
@@ -41,6 +89,9 @@ export default function Home() {
           <p className="mt-4 text-xl text-gray-600 dark:text-gray-400">
             {courseData.description}
           </p>
+          <div className="mt-6">
+            <ProgressBar progress={progress} />
+          </div>
         </div>
 
         <div className="space-y-12">
