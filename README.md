@@ -1,4 +1,10 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## Systems For Deep Learning CMS
+
+It feels like CS690AB is very popular this fall and lots of people wanna study that but seats are full.
+
+Seating and registration shouldnt be a limiting factor for learning, so making an open source CMS for the same.
+
+
 
 ## Getting Started
 

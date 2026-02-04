@@ -1,0 +1,24 @@
+{
+  "title": "Systems for Deep Learning",
+  "description": "A course on the systems aspects of deep learning.",
+  "modules": [
+    {
+      "title": "Introduction",
+      "readings": [
+        {
+          "title": "The Unreasonable Effectiveness of Data",
+          "url": "http://static.googleusercontent.com/media/research.google.com/en//pubs/archive/35179.pdf"
+        }
+      ]
+    },
+    {
+      "title": "Hardware for Deep Learning",
+      "readings": [
+        {
+          "title": "A New Golden Age for Computer Architecture",
+          "url": "https://cacm.acm.org/magazines/2019/2/234352-a-new-golden-age-for-computer-architecture/fulltext"
+        }
+      ]
+    }
+  ]
+}
